@@ -9,7 +9,7 @@ Please report suspected vulnerabilities privately.
 - Subject: [Security - Stock Trader] <short description>
 - Include: affected versions/commit, reproduction steps, impact, and any logs (redact secrets)
 
-We will acknowledge receipt within 3 business days and provide a remediation timeline after triage.
+We will acknowledge receipt within 3 business days and will work to address the issue, in a timeframe commensurate with its severity.
 
 ## Scope
 - Terraform code in this repository
@@ -21,6 +21,6 @@ We will acknowledge receipt within 3 business days and provide a remediation tim
 - Misconfigurations outside the documented usage
 
 ## Disclosure
-Once a fix is available, we will publish a security advisory with mitigation steps and credit reporters who wish to be acknowledged.
+Once a fix is available, we will open an issue explaining the problem and the fix, and will associate the commit with the fix to that issue.
 
 
