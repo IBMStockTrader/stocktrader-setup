@@ -114,6 +114,7 @@ resource "terraform_data" "apply_peer_auth" {
       set -e
       az account set --subscription ${var.subscription_id}
       az aks get-credentials --resource-group ${var.resource_group_name} --name ${var.aks_cluster_name} --overwrite-existing
+      kubectl wait --for=condition=Ready pods --all -n aks-istio-system --timeout=120s
       kubectl apply -f ${local_file.peer_auth_yaml[0].filename}
     EOT
     interpreter = ["/bin/bash", "-c"]

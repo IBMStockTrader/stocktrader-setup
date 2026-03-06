@@ -97,6 +97,7 @@ For step-by-step checks and example outputs, see `mdfiles/CNI_OVERLAY_IMPLEMENTA
 - Confirm namespace label: `kubectl get namespace <ns> --show-labels`
 - Pods READY 2/2 with `istio-proxy`: `kubectl -n <ns> get pods -o wide`
 - External gateway IP assigned: `kubectl -n aks-istio-ingress get svc aks-istio-ingressgateway-external -o wide`
+- Istio-proxy and CA sidecars in app pods: `kubectl get pod gitops-stocktrader-broker-7b88476dd6-95tf5 -n stock-trader -o jsonpath='{.metadata.annotations.sidecar\.istio\.io/status}' | jq`
 
 For detailed steps, commands, and troubleshooting, see `mdfiles/ISTIO_SETUP_FIXES.md`.
 
