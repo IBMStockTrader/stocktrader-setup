@@ -295,17 +295,19 @@ if [ "$ENABLE_ISTIO" = "true" ]; then
           echo -e "${CYAN}📦 Checking mTLS on pod: $FIRST_POD${NC}"
           
           # Use istioctl to describe the pod and check mTLS status
-          ISTIO_DESCRIBE=$(istioctl x describe pod "$FIRST_POD" -n "$STOCK_TRADER_NAMESPACE" 2>/dev/null || echo "")
-          if echo "$ISTIO_DESCRIBE" | grep -q "PeerAuthentication: STRICT"; then
+          ISTIO_DESCRIBE=$(istioctl x describe pod "$FIRST_POD" -n "$STOCK_TRADER_NAMESPACE" --istioNamespace aks-istio-system 2>/dev/null || echo "")
+          if echo "$ISTIO_DESCRIBE" | grep -q "Workload mTLS mode: STRICT"; then
             echo -e "${GREEN}✅ Pod has STRICT mTLS policy applied${NC}"
           elif echo "$ISTIO_DESCRIBE" | grep -q "PeerAuthentication:"; then
-            echo -e "${YELLOW}⚠️  Pod has mTLS policy applied (not STRICT)${NC}"
+              echo -e "${YELLOW}⚠️  Pod has mTLS policy applied (not STRICT)${NC}"
           else
-            echo -e "${YELLOW}⚠️  Could not determine mTLS policy on pod${NC}"
+              echo -e "${YELLOW}⚠️  Could not determine mTLS policy on pod${NC}"
           fi
-          
+
           # Check if sidecar is injected
-          if echo "$ISTIO_DESCRIBE" | grep -q "istio-proxy"; then
+          SIDECAR_STATUS=$(kubectl get pod "$FIRST_POD" -n "$STOCK_TRADER_NAMESPACE" \
+            -o jsonpath='{.metadata.annotations.sidecar\.istio\.io/status}' 2>/dev/null || echo "")
+          if echo "$SIDECAR_STATUS" | grep -qw "istio-proxy"; then
             echo -e "${GREEN}✅ Istio sidecar (istio-proxy) is injected${NC}"
           else
             echo -e "${YELLOW}⚠️  Istio sidecar not detected${NC}"
@@ -320,7 +322,7 @@ if [ "$ENABLE_ISTIO" = "true" ]; then
     else
       echo -e "${YELLOW}⚠️  PeerAuthentication 'stock-trader-mtls' not found${NC}"
     fi
-    
+
     # Show all PeerAuthentication resources
     echo -e "\n${CYAN}📋 All PeerAuthentication resources in $STOCK_TRADER_NAMESPACE namespace:${NC}"
     kubectl get peerauthentication -n "$STOCK_TRADER_NAMESPACE" -o custom-columns="NAME:.metadata.name,MODE:.spec.mtls.mode,AGE:.metadata.creationTimestamp" 2>/dev/null || echo "  - Could not retrieve PeerAuthentication resources"
@@ -343,7 +345,7 @@ if kubectl get namespace "$EXTERNAL_SECRETS_NAMESPACE" > /dev/null 2>&1; then
   echo -e "${GREEN}✅ External Secrets pods: $ESO_READY/$ESO_PODS running${NC}"
   
   # Check if all pods are ready
-  ESO_NOT_READY=$(kubectl get pods -n "$EXTERNAL_SECRETS_NAMESPACE" --no-headers | grep -v "Running" | wc -l)
+  ESO_NOT_READY=$(kubectl get pods -n "$EXTERNAL_SECRETS_NAMESPACE" --no-headers | grep -cv "Running")
   if [ "$ESO_NOT_READY" -eq 0 ]; then
     echo -e "${GREEN}✅ All External Secrets pods are ready${NC}"
   else
@@ -374,7 +376,7 @@ if kubectl get namespace "$STOCK_TRADER_NAMESPACE" > /dev/null 2>&1; then
   echo -e "${GREEN}✅ Stock Trader pods: $APP_READY/$APP_PODS running${NC}"
   
   # Check if all pods are ready
-  APP_NOT_READY=$(kubectl get pods -n "$STOCK_TRADER_NAMESPACE" --no-headers | grep -v "Running" | wc -l)
+  APP_NOT_READY=$(kubectl get pods -n "$STOCK_TRADER_NAMESPACE" --no-headers | grep -cv "Running")
   if [ "$APP_NOT_READY" -eq 0 ]; then
     echo -e "${GREEN}✅ All Stock Trader pods are ready${NC}"
   else
@@ -413,7 +415,7 @@ if kubectl get namespace "$COUCHDB_NAMESPACE" > /dev/null 2>&1; then
   echo -e "${GREEN}✅ CouchDB pods: $COUCHDB_READY/$COUCHDB_PODS running${NC}"
   
   # Check if all pods are ready
-  COUCHDB_NOT_READY=$(kubectl get pods -n "$COUCHDB_NAMESPACE" --no-headers | grep -v "Running" | wc -l)
+  COUCHDB_NOT_READY=$(kubectl get pods -n "$COUCHDB_NAMESPACE" --no-headers | grep -cv "Running")
   if [ "$COUCHDB_NOT_READY" -eq 0 ]; then
     echo -e "${GREEN}✅ All CouchDB pods are ready${NC}"
   else

@@ -66,11 +66,11 @@ aks_node_vm_size = "Standard_D4ds_v5"
 # Istio service mesh revision for AKS
 # This revision must match the namespace label for sidecar injection
 # Current stable version: asm-1-24
-aks_service_mesh_revisions = ["asm-1-26"]
+aks_service_mesh_revisions = ["asm-1-27"]
 
 # Istio revision label applied to namespaces for sidecar injection
 # Must match the revision in aks_service_mesh_revisions
-istio_revision = "asm-1-26"
+istio_revision = "asm-1-27"
 
 # Kubernetes namespace for the Stock Trader application
 # This namespace will be created and labeled for Istio sidecar injection
