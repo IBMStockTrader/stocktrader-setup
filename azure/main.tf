@@ -49,7 +49,7 @@ module "dns" {
 # ----------------------------------------------------------------------------------
 module "redis" {
   source              = "./modules/redis"
-  location            = var.location
+  location            = local.resolved_data_services_location
   resource_group_name = var.resource_group_name
   redis_cache_name    = var.redis_cache_name
   tags = merge(local.common_tags, {
@@ -71,7 +71,7 @@ module "redis" {
 # ----------------------------------------------------------------------------------
 module "postgres" {
   source                       = "./modules/postgres"
-  location                     = var.location
+  location                     = local.resolved_data_services_location
   resource_group_name          = var.resource_group_name
   postgres_server_name         = var.postgres_server_name
   administrator_login          = var.administrator_login
@@ -81,6 +81,7 @@ module "postgres" {
     ServiceType = "Database"
     ServiceTier = "Standard"
   })
+  database_version = var.database_version
 }
 
 # ----------------------------------------------------------------------------------

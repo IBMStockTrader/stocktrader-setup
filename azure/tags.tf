@@ -2,6 +2,10 @@
 # Copyright 2025 Kyndryl
 
 locals {
+  # Resolve data_services_location: fall back to the primary location when
+  # the override is left as an empty string (the default).
+  resolved_data_services_location = var.data_services_location != "" ? var.data_services_location : var.location
+
   # Common tags that should be applied to all resources
   common_tags = {
     Environment        = var.environment

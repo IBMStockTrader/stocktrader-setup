@@ -1,14 +1,48 @@
 # Terraform
-.terraform/
-.terraform.lock.hcl
+# NOTE: .terraform.lock.hcl is intentionally tracked in git.
+# This ensures reproducible provider versions across team members and CI,
+# and allows Dependabot to detect provider version updates.
+**/.terraform/*
 *.tfvars
 *.tfvars.json
-*.tfplan
 terraform.tfstate
 terraform.tfstate.*
 crash.log
+crash.*.log
 override.tf
 override.tf.json
+*_override.tf
+*_override.tf.json
+*.tfplan
+*.tfplan.*
+
+# Terraform-generated module artefacts
+modules/function_app/build/*
+modules/postgres_init/*
+modules/apply_cr/*_stock-trader.yaml
+modules/apply_cr/*_${namespace}.yaml
+
+# Certificates and private keys
+*.pem
+*.key
+*.crt
+*.cer
+*.der
+*.p12
+*.pfx
+*.p7b
+*.p7c
+*.p8
+*.p8a
+
+# Environment and local config
+.env
+.env.*
+output.txt
+
+# Terraform CLI config
+.terraformrc
+terraform.rc
 
 # OS / editor
 .DS_Store
