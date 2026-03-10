@@ -116,6 +116,39 @@ variable "postgres_server_name" {
   }
 }
 
+variable "database_version" {
+  description = "Version of the PostgreSQL Flexible Server"
+  type        = string
+  nullable    = false
+  default     = "17"
+
+  validation {
+    condition     = contains(["16", "17", "18"], var.database_version)
+    error_message = "Azure Flexible Server versions 13, 14, and 15 are now in restricted or paid support. Please use 16, 17, or 18."
+  }
+}
+
+variable "data_services_location" {
+  description = "Azure region for data services (PostgreSQL, Redis). Defaults to var.location. Override when the primary region has quota restrictions for managed data services."
+  type        = string
+  nullable    = false
+  default     = ""
+
+  validation {
+    condition = var.data_services_location == "" || contains([
+      # Americas
+      "eastus", "eastus2", "southcentralus", "westus", "westus2", "westus3", "centralus", "northcentralus", "westcentralus", "canadacentral", "canadaeast", "brazilsouth", "brazilsoutheast",
+      # Europe
+      "northeurope", "westeurope", "francecentral", "francesouth", "germanywestcentral", "germanynorth", "switzerlandnorth", "switzerlandwest", "uksouth", "ukwest", "norwayeast", "norwaywest", "swedensouth",
+      # Asia Pacific
+      "eastasia", "southeastasia", "japaneast", "japanwest", "australiaeast", "australiasoutheast", "australiacentral", "australiacentral2", "koreacentral", "koreasouth", "centralindia", "southindia", "westindia", "jioindiawest",
+      # Middle East & Africa
+      "uaeorth", "southafricanorth", "southafricawest"
+    ], var.data_services_location)
+    error_message = "data_services_location must be a valid Azure region or empty string (to inherit from var.location)."
+  }
+}
+
 # Postgres private endpoint name
 variable "postgres_private_endpoint_name" {
   description = "Name of the PostgreSQL private endpoint"

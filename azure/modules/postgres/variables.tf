@@ -55,6 +55,13 @@ variable "client_ip" {
 }
 
 # =============================================================================
+# DATABASE CONFIGURATION VARIABLES
+# =============================================================================
+
+# Version of the PostgreSQL Flexible Server to deploy
+variable "database_version" { type = string }
+
+# =============================================================================
 # RESOURCE MANAGEMENT VARIABLES
 # =============================================================================
 
