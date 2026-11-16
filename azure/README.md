@@ -108,7 +108,7 @@ bash precheck.sh
 ## Configure
 1. Copy and edit variables file:
    ```bash
-   cp terraform.tf vars.example terraform.tfvars
+   cp terraform.tfvars.example terraform.tfvars
    # Edit terraform.tfvars with your values
    ```
 
